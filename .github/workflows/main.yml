@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run script
         run: |
-          sudo -H pip install black isort pytest
+          pip install black isort pytest
           ls -la
           black --check .
           isort --check .
