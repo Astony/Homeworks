@@ -4,8 +4,7 @@ from typing import Sequence
 
 def check_fibonacci(x: Sequence[int]) -> bool:
     if len(x) != 0:
-        if (sqrt(5 * (x[0] ** 2) - 4) % 1 == 0
-                or sqrt(5 * (x[0] ** 2) + 4) % 1 == 0):
+        if sqrt(5 * (x[0] ** 2) - 4) % 1 == 0 or sqrt(5 * (x[0] ** 2) + 4) % 1 == 0:
             fib1 = fib2 = 1
             while fib2 != x[0]:
                 fib = fib1 + fib2
