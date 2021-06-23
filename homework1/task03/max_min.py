@@ -7,7 +7,7 @@ def find_maximum_and_minimum(file_name: str) -> Tuple[int, int]:
         min_int = min(line1)
         max_int = max(line1)
         for lines in inp:
-            line = lines.strip().split()
+            line = lines.split()
             if min_int > min(line):
                 min_int = min(line)
             elif max_int < max(line):
