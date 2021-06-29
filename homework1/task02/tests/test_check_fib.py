@@ -14,4 +14,3 @@ def test_right_sequences(test_input):
 def test_wrong_sequences(test_input):
     """Testing WRONG sequences of fibonacci and zero-len case"""
     assert not check_fibonacci(test_input)
-
