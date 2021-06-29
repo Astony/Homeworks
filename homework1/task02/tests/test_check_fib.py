@@ -1,4 +1,5 @@
 import pytest
+
 from homework1.task02.check_fib import check_fibonacci
 
 

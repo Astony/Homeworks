@@ -1,4 +1,5 @@
 import pytest
+
 from homework1.task04.zero_sum_of_tuples import check_sum_of_four
 
 """Testing when the dimension of our tuples is 1"""
