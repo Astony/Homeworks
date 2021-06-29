@@ -1,15 +1,21 @@
-from typing import Tuple
+from typing import List, Tuple
+
+"""Reading integers from file function"""
+
+
+def read_file(file_name: str) -> List[int]:
+    numbers_list = []
+    with open(file_name, "r") as inp:
+        for line in inp:
+            numbers_list.append(int(line))
+    return numbers_list
+
+
+"""Search of max and min integers from list"""
 
 
 def find_maximum_and_minimum(file_name: str) -> Tuple[int, int]:
-    with open(file_name, "r") as inp:
-        line1 = inp.readline().strip().split()
-        min_int = min(line1)
-        max_int = max(line1)
-        for lines in inp:
-            line = lines.split()
-            if min_int > min(line):
-                min_int = min(line)
-            elif max_int < max(line):
-                max_int = max(line)
-        return int(min_int), int(max_int)
+    list_of_numbers = read_file(file_name)
+    min_int = min(list_of_numbers)
+    max_int = max(list_of_numbers)
+    return min_int, max_int

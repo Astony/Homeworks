@@ -1,2 +1,5 @@
-def check_power_of_2(a: int) -> bool:
-    return not (bool(a & (a - 1))) if a != 0 else False
+"""bit logical multiplication to check if power the number is 2"""
+
+
+def check_power_of_2(number: int) -> bool:
+    return not (bool(number & (number - 1))) and number != 0
