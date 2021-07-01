@@ -1,6 +1,5 @@
 from typing import Callable
 
-
 """Parametrize cash decorator that 
 stores the argument of n = size calls to a function
 with the same argument"""
