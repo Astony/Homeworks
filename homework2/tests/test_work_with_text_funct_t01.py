@@ -29,35 +29,40 @@ For easy test there is easy_words.txt
 
 
 @pytest.mark.parametrize(
-    "test_input, result", [("data.txt", words_from_file), ("words.txt", easy)]
+    "test_input, result",
+    [("homework2/data.txt", words_from_file), ("homework2/words.txt", easy)],
 )
 def test_get_longest_diverse_words(test_input, result):
     assert work_with_text.get_longest_diverse_words(test_input) == result
 
 
 @pytest.mark.parametrize(
-    "test_input, result", [("data.txt", "›"), ("rarest_char.txt", "r")]
+    "test_input, result",
+    [("homework2/data.txt", "›"), ("homework2/rarest_char.txt", "r")],
 )
 def test_get_rarest_char(test_input, result):
     assert work_with_text.get_rarest_char(test_input) == result
 
 
 @pytest.mark.parametrize(
-    "test_input, result", [("data.txt", 5392), ("punctuation_marks.txt", 5)]
+    "test_input, result",
+    [("homework2/data.txt", 5392), ("homework2/punctuation_marks.txt", 5)],
 )
 def test_count_punctuation_chars(test_input, result):
     assert work_with_text.count_punctuation_chars(test_input) == result
 
 
 @pytest.mark.parametrize(
-    "test_input, result", [("data.txt", 2972), ("non_ascii_chars.txt", 7)]
+    "test_input, result",
+    [("homework2/data.txt", 2972), ("homework2/non_ascii_chars.txt", 7)],
 )
 def test_count_non_ascii_chars(test_input, result):
     assert work_with_text.count_non_ascii_chars(test_input) == result
 
 
 @pytest.mark.parametrize(
-    "test_input, result", [("data.txt", "ä"), ("non_ascii_chars.txt", "Ü")]
+    "test_input, result",
+    [("homework2/data.txt", "ä"), ("homework2/non_ascii_chars.txt", "Ü")],
 )
 def test_get_most_common_non_ascii_char(test_input, result):
     assert work_with_text.get_most_common_non_ascii_char(test_input) == result
