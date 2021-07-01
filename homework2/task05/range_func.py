@@ -1,3 +1,9 @@
+"""
+Depending of quantity of arguments define start, stop boundary
+                        and step
+"""
+
+
 def custom_range(collection, *args, step=1):
     if len(args) == 3:
         start, stop, step = args

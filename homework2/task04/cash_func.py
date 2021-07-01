@@ -5,6 +5,12 @@ def func(a, b):
     return (a * b) * 2
 
 
+"""
+Keep all arguments and results in storage dict
+and return data from depending on the input args
+"""
+
+
 def cache(func: Callable) -> Callable:
     storage = {}
 

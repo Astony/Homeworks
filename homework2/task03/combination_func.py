@@ -1,6 +1,11 @@
 import itertools
 from typing import Any, List
 
+"""
+In first we create all of available combinations and
+then thi filter combination if it numbers not in theis place
+"""
+
 
 def combinations(list_of_lists: List[Any]) -> List[List]:
     all_elements = list(itertools.chain(*list_of_lists))
