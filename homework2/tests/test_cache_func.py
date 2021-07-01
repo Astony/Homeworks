@@ -1,6 +1,5 @@
 from homework2.task04.cash_func import cache, func
 
-
 cache_func = cache(func)
 some = 100, 200
 
