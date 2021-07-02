@@ -18,8 +18,7 @@ def test_sum_of_subbarray_positive_cases(array, sub_len, expected):
 """Test with cases zero-len input list/step>len(list)/negative step"""
 
 
-@pytest.mark.parametrize(
-    "array, sub_len, expected", [([], 3, 0), ([1, 3, -1], 4, 0), ([1, 3, -1], -1, 0)]
-)
-def test_sum_of_subbarray_negative_cases(array, sub_len, expected):
-    assert find_maximal_subarray_sum(array, sub_len) == expected
+@pytest.mark.parametrize("array, sub_len", [([], 3), ([1, 3, -1], 4), ([1, 3, -1], -1)])
+def test_sum_of_subbarray_exception_cases(array, sub_len):
+    with pytest.raises(ValueError):
+        assert find_maximal_subarray_sum(array, sub_len)
