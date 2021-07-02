@@ -3,7 +3,7 @@ from typing import Any, List
 
 """
 In first we create all of available combinations and
-then thi filter combination if it numbers not in theis place
+then thi filter combination if it numbers not in this place
 """
 
 

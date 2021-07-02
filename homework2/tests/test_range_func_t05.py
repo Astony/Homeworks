@@ -4,6 +4,8 @@ from homework2.task05.range_func import custom_range
 
 integers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+"""Testing 3 cases with 1,2 and 3 arguments"""
+
 
 @pytest.mark.parametrize(
     "collection, args, result",

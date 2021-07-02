@@ -1,21 +1,21 @@
 import string
+import unicodedata
 from typing import List
 
-from homework2.task01.text_func.dict_and_text import dict_and_text
+from homework2.task01.text_func.char_dict import char_dict
 from homework2.task01.text_func.fill_weight_list import fill_word_weight_list
-from homework2.task01.text_func.read_text_func import read_text_func
+from homework2.task01.text_func.letter_dict import letter_dict
+from homework2.task01.text_func.words_func import words_list
 
 
-def get_longest_diverse_words(file_path: str) -> List[str]:
-    all_words = []
-    text = read_text_func(file_path)
-    count_dict, text = dict_and_text(text)
-    for word in text.split():
-        all_words.append(word)
-    """Combine each word with its weight"""
-    weight_and_words = sorted(
-        list(set(zip(fill_word_weight_list(all_words, count_dict), all_words)))
-    )
+def get_longest_diverse_words(
+    file_path: str, encoding="utf-8", errors="ignore"
+) -> List[str]:
+    all_words = list(words_list(file_path, encoding=encoding, errors=errors))
+    letter_count = letter_dict(file_path, encoding=encoding, errors=errors)
+    """Combine each word with its weight in pairs"""
+    uniq_pairs = set(zip(fill_word_weight_list(all_words, letter_count), all_words))
+    weight_and_words = sorted(list(uniq_pairs))
     """Longest words will be those whose length is greater
     than the average value of the lengths of all words
     """
@@ -32,14 +32,8 @@ def get_longest_diverse_words(file_path: str) -> List[str]:
 """Count every char and return the rarest"""
 
 
-def get_rarest_char(file_path: str) -> str:
-    text = read_text_func(file_path)
-    count_dict = {}
-    for char in text:
-        if char not in count_dict.keys():
-            count_dict[char] = 1
-        else:
-            count_dict[char] += 1
+def get_rarest_char(file_path: str, encoding="utf-8", errors="ignore") -> str:
+    count_dict = char_dict(file_path, encoding=encoding, errors=errors)
     for key, value in count_dict.items():
         if value == min(count_dict.values()):
             return key
@@ -48,46 +42,39 @@ def get_rarest_char(file_path: str) -> str:
 """Count ascii and non ascii punctuation marks"""
 
 
-def count_punctuation_chars(file_path: str) -> int:
-    counter = 0
-    text = read_text_func(file_path)
-    for char in text:
-        if char in string.punctuation or ord(char) in [
-            171,
-            187,
-            2014,
-            2013,
-            8250,
-            2039,
-        ]:
-            counter += 1
+def count_punc(file_path: str, encoding="utf-8", errors="ignore") -> int:
+    with open(file_path, encoding=encoding, errors=errors) as file_input:
+        counter = 0
+        while char := file_input.read(1):
+            if unicodedata.category(char).startswith("P"):
+                counter += 1
     return counter
 
 
 """Count char if they order > max order of ascii char"""
 
 
-def count_non_ascii_chars(file_path: str) -> int:
-    text = read_text_func(file_path)
-    counter = 0
-    for char in text:
-        if ord(char) > 128:
-            counter += 1
+def non_ascii(file_path: str, encoding="utf-8", errors="ignore") -> int:
+    with open(file_path, encoding=encoding, errors=errors) as file_input:
+        counter = 0
+        while char := file_input.read(1):
+            if ord(char) > 128:
+                counter += 1
     return counter
 
 
 """Count every non-ascii char and then return the most common"""
 
 
-def get_most_common_non_ascii_char(file_path: str) -> str:
-    text = read_text_func(file_path)
-    count_dict = {}
-    for char in text:
-        if ord(char) > 128:
-            if char not in count_dict.keys():
-                count_dict[char] = 1
-            else:
-                count_dict[char] += 1
-    for key, value in count_dict.items():
-        if value == max(count_dict.values()):
+def most_common_non_ascii(file_path: str, encoding="utf-8", errors="ignore") -> str:
+    with open(file_path, encoding=encoding, errors=errors) as file_input:
+        non_asc_dict = {}
+        while char := file_input.read(1):
+            if ord(char) > 128:
+                if char not in non_asc_dict:
+                    non_asc_dict[char] = 1
+                else:
+                    non_asc_dict[char] += 1
+    for key, value in non_asc_dict.items():
+        if value == max(non_asc_dict.values()):
             return key
