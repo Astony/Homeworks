@@ -1,5 +1,6 @@
+from unittest.mock import Mock
+
 from homework2.task04.cash_func import cache, func
-from mock import Mock
 
 """
 Using mock we can get information about how many
