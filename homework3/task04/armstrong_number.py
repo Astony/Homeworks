@@ -1,5 +1,3 @@
-from functools import reduce
-
 """
 Transform the input number into list of chars and then we raise
  each digit to a power equal to their number and find the sum
