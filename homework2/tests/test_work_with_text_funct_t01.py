@@ -69,7 +69,7 @@ def test_count_punctuation_chars(test_input, result):
 
 @pytest.mark.parametrize(
     "test_input, result",
-    [("homework2/data.txt", 2971), ("homework2/non_ascii_chars.txt", 7)],
+    [("homework2/data.txt", 2972), ("homework2/non_ascii_chars.txt", 7)],
 )
 def test_count_non_ascii_chars(test_input, result):
     assert (
