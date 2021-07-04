@@ -9,9 +9,9 @@ function's raise ValueError
 
 def count_i_chars(url: str) -> int:
     if requests.get(url).status_code == 200:
-        weburl = requests.get(url)
+        web_url = requests.get(url)
         counter = 0
-        for char in weburl.text:
+        for char in web_url.text:
             if char == "i":
                 counter += 1
         return counter
