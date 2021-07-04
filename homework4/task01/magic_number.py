@@ -1,5 +1,7 @@
-"""Function return True or False, if type of line in file
-is int, otherwise if it has another type, func return valueError"""
+"""
+Function return True or False, if type of line in file
+is int, otherwise if it has another type, func return ValueError
+"""
 
 
 def read_magic_number(path: str) -> bool:

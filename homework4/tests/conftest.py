@@ -2,6 +2,11 @@ import os
 
 import pytest
 
+"""
+All fixtures create test file.txt, write something into the file,
+start tests with the file and then remove the file
+ """
+
 
 @pytest.fixture()
 def create_right_file():

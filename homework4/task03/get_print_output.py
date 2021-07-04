@@ -8,9 +8,9 @@ where text would be save
 
 
 def my_precious_logger(text: str):
-    stdout_correct = sys.stdout
-    stderr_error = sys.stderr
+    stdout_correct_text = sys.stdout
+    stderr_error_text = sys.stderr
     if text[0:5] == "error":
-        stderr_error.write(text)
+        stderr_error_text.write(text)
     else:
-        stdout_correct.write(text)
+        stdout_correct_text.write(text)
