@@ -1,6 +1,7 @@
 import os
 
 import pytest
+
 from homework4.task01.magic_number import read_magic_number
 
 
