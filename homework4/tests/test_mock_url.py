@@ -20,5 +20,5 @@ def test_ValueError_output_in_non_existing_fake_url():
         url = "https://fakeURL.com/"
         mock_request.return_value.text = "The number of i = 3\nii"
         mock_request.return_value.status_code = 404
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="Unreachable {url}"):
             count_i_chars(url)

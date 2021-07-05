@@ -1,24 +1,18 @@
-import os
-
 import pytest
 
 from homework4.task01.magic_number import read_magic_number
 
 
-def test_right_case(create_right_file):
-    """Check the positive case"""
-    assert read_magic_number(create_right_file)
+@pytest.mark.parametrize("inp, result", [("2", True), ("3", False)])
+def test_true_false_cases(file_with_true_and_false_value, result, inp):
+    """Check the True and False cases"""
+    assert read_magic_number(file_with_true_and_false_value) == result
 
 
-def test_wrong_case(create_wrong_file):
-    """Check the negative case"""
-    assert not read_magic_number(create_wrong_file)
-
-
-def test_wrong_case_with_exception(create_exception_file):
-    """Check the case with ValueError"""
-    with pytest.raises(ValueError):
-        read_magic_number(create_exception_file)
+def test_exception_case(file_with_exception_value):
+    """Check case when file contain string that causes exception"""
+    with pytest.raises(ValueError, match="It is not a magic number!"):
+        read_magic_number(file_with_exception_value)
 
 
 def test_existing_file_after_assert_error(exist_of_file):
