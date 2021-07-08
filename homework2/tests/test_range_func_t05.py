@@ -1,5 +1,4 @@
 import pytest
-
 from homework2.task05.range_func import custom_range
 
 integers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -17,3 +16,14 @@ integers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 )
 def test_of_range_func_integers(collection, args, result):
     assert custom_range(collection, *args) == result
+
+
+def test_of_boundary_values():
+    """Empty output test"""
+    assert custom_range(integers, 1, 1) == []
+
+
+def test_of_ValueError_case():
+    """If one of couple arguments isn't from collection, should rise ValueError"""
+    with pytest.raises(ValueError):
+        custom_range(integers, 1, 10)

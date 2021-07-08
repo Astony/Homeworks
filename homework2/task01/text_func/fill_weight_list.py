@@ -9,6 +9,6 @@ def fill_word_weight_list(list_of_words, dict_of_chars_count):
     for i in list_of_words:
         for j in i:
             summ += dict_of_chars_count[j]
-        words_weight.append(summ)
+        words_weight.append((summ, i))
         summ = 0
-    return words_weight
+    return sorted(words_weight)

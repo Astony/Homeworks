@@ -4,15 +4,15 @@ from homework2.task01 import work_with_text
 
 words_from_file = [
     "ÜBERSICHT",
-    "Symbol",
-    "vollzo",
-    "klopft",
-    "Sowohl",
-    "vollkom",
-    "Ablauf",
-    "obwohl",
-    "Scylla",
-    "Vakuum",
+    "Polykarp",
+    "psycholo",
+    "vorkommt",
+    "Albdruck",
+    "Kampfmit",
+    "Zuflucht",
+    "Komforts",
+    "Zugzwang",
+    "Rhythmus",
 ]
 easy = ["mud", "ash", "boy", "cat", "cup", "jam", "rob", "lie", "pig", "beg"]
 
@@ -43,7 +43,7 @@ def test_get_longest_diverse_words(test_input, result):
 
 @pytest.mark.parametrize(
     "test_input, result",
-    [("homework2/data.txt", "›"), ("homework2/rarest_char.txt", "r")],
+    [("homework2/data.txt", ")"), ("homework2/rarest_char.txt", "r")],
 )
 def test_get_rarest_char(test_input, result):
     assert (

@@ -2,18 +2,18 @@ from unittest.mock import Mock
 
 from homework2.task04.cash_func import cache, func
 
-"""
-Using mock we can get information about how many
-times func was called
-"""
-
-mock_func = Mock(func)
-mock_decorator = cache(mock_func)
 some = 100, 200
 
 
 def test_of_cache_function():
-    mock_decorator(*some)
-    mock_decorator(*some)
-    mock_decorator(*some)
-    assert mock_func.call_count == 1
+    times_called = 0
+
+    @cache
+    def foo(a: int, b: int) -> int:
+        nonlocal times_called
+        times_called += 1
+        return a * b
+
+    foo(*some)
+    foo(*some)
+    assert times_called == 1
