@@ -13,7 +13,7 @@ in the case of least common number,the smallest number will be chosen
 """
 
 
-def major_and_minor_elem(list_elements: List) -> Tuple[int, int]:
+def major_and_minor_elem(list_elements: List[int]) -> Tuple[int, int]:
     counter_elements = Counter(list_elements)
     minor_elements = {
         key: value

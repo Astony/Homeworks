@@ -18,3 +18,9 @@ def test_negative_case():
 def test_of_equal_numbers_case():
     """Test for case of equal numbers in input list"""
     assert major_and_minor_elem([1, 1, 1, 1, 1]) == (1, 1)
+
+
+def test_of_different_type_of_list_elem():
+    """Test of case, when list contains elements of different types"""
+    with pytest.raises(TypeError):
+        major_and_minor_elem([1, 2, 3, (1,)])

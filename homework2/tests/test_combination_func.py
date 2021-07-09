@@ -45,3 +45,8 @@ dim3 = [
 )
 def test_positive_case(test_input, result):
     assert combinations(test_input) == result
+
+
+def test_of_invalid_input():
+    with pytest.raises(ValueError, match="Invalid input argument, check dimensions"):
+        combinations([[1], [1]])
