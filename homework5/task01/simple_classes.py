@@ -14,7 +14,7 @@ class Homework:
         self.deadline = self.created + timedelta(days=days) - datetime.now()
 
     def is_active(self) -> bool:
-        return self.deadline != timedelta()
+        return self.deadline > timedelta(days=0)
 
 
 class Student:
