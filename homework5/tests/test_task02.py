@@ -1,5 +1,5 @@
-from homework5.task02.default_func import custom_sum_default, print_result_default
-from homework5.task02.func_with_class_decorator import Saver, custom_sum, print_result
+from homework5.task02.decorated_func import Saver, custom_sum, print_result
+from homework5.task02.default_func import custom_sum_def, print_result_def
 
 
 def test_without_Saver():
@@ -8,10 +8,10 @@ def test_without_Saver():
     have attributes of wrapper function
     """
     assert (
-        custom_sum_default.__doc__
+        custom_sum_def.__doc__
         == "Function-wrapper which print result of an original function"
     )
-    assert custom_sum_default.__name__ == "wrapper"
+    assert custom_sum_def.__name__ == "wrapper"
 
 
 def test_with_Saver():
