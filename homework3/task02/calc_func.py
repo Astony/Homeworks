@@ -20,9 +20,7 @@ Create new list and find sum
 
 
 def total_sum(numbers: List) -> int:
-    p_object = Pool(32)
-    changed_numbs = p_object.map(slow_calculate, numbers)
-    result = sum(changed_numbs)
-    p_object.close()
-    p_object.join()
-    return result
+    with Pool(32) as p_object:
+        changed_numbs = p_object.map(slow_calculate, numbers)
+        result = sum(changed_numbs)
+        return result

@@ -5,5 +5,10 @@ Transform the input number into list of chars and then we raise
 
 
 def is_armstrong_number(number: int) -> bool:
-    digits_pow = [pow(int(i), len(str(number))) for i in str(number)]
-    return sum(digits_pow) == number
+    if number > 0:
+        digits_pow = [pow(int(i), len(str(number))) for i in str(number)]
+        return sum(digits_pow) == number
+    else:
+        list_of_numbs = ["-" + i for i in str(number)[1:]]
+        digits_pow = [pow(int(i), len(list_of_numbs)) for i in list_of_numbs]
+        return sum(digits_pow) == number

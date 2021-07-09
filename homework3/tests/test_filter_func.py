@@ -29,3 +29,9 @@ We check 2 cases when the desired combination
 )
 def test_filter(result, test_input):
     assert make_filter(**test_input).apply(data) == result
+
+
+def test_of_invalid_input():
+    with pytest.raises(TypeError):
+        make_filter('name').apply(data)
+        print("Invalid input data")
