@@ -33,5 +33,5 @@ def test_filter(result, test_input):
 
 def test_of_invalid_input():
     with pytest.raises(TypeError):
-        make_filter('name').apply(data)
+        make_filter("name").apply(data)
         print("Invalid input data")

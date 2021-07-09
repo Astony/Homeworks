@@ -29,4 +29,3 @@ def cache(size: int) -> Callable:
 @cache(size=1)
 def func(a, b):
     return a * b
-
