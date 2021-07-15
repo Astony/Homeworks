@@ -1,5 +1,6 @@
-import requests
 from collections import Counter
+
+import requests
 
 """
 Function get some url, check that the url exists
