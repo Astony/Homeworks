@@ -1,7 +1,9 @@
+from typing import Generator
+
 """Generator of FizzBuzz numbers"""
 
 
-def fizzbuzz(len_out_sequence):
+def fizzbuzz(len_out_sequence: int) -> Generator[int]:
     """Test of fizzbuzz
         Test, that our function generate right sequence:
     >>> list(fizzbuzz(6))

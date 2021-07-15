@@ -7,7 +7,7 @@ where text would be save
 """
 
 
-def my_precious_logger(text: str):
+def my_precious_logger(text: str) -> None:
     stdout_correct_text = sys.stdout
     stderr_error_text = sys.stderr
     if text.startswith("error"):
