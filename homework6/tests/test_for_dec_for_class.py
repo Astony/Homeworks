@@ -24,13 +24,16 @@ foo_class2 = TestClass1()
 boo_class1 = TestClass2()
 
 
-def test_count_instances_and_clear_count_methods():
+def test_count_instances_method():
     """
     Check that objects of the same class have equal counter's value
     before and after using reset method and also
     that object of another class has different counter
     """
     assert foo_class2.get_instances_count() == foo_class1.get_instances_count() == 2
+
+
+def test_clear_instances_method():
     foo_class2.clear_instances_count()
     assert foo_class2.get_instances_count() == foo_class1.get_instances_count() == 0
     assert boo_class1.get_instances_count() == 1

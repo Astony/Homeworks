@@ -42,7 +42,7 @@ def test_HomeworkResult_wrong_type_of_input_attribute():
     with pytest.raises(
         AttributeError, match="Argument should has Homeworks class type"
     ):
-        good_student.do_homework(some_object, "I did something wrong, isn't it?")
+        good_student.do_homework(some_object, "I have done something wrong, isn't it?")
     with pytest.raises(
         AttributeError, match="Argument should has Homeworks class type"
     ):

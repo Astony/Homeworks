@@ -1,4 +1,3 @@
-from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import ClassVar
 
@@ -49,12 +48,10 @@ class Student:
         self.last_name = last_name
 
     def do_homework(self, homework_obj: ClassVar, solution: str) -> ClassVar:
-        if check_homework_type(homework_obj, Homework):
-            if homework_obj.is_active():
-                homework_result = HomeworkResult(self, homework_obj, solution)
-                return homework_result
-            else:
-                raise DeadlineError("You are late")
+        if check_homework_type(homework_obj, Homework) and homework_obj.is_active():
+            return HomeworkResult(self, homework_obj, solution)
+        else:
+            raise DeadlineError("You are late")
 
 
 class Teacher(Student):
@@ -63,7 +60,7 @@ class Teacher(Student):
     here is the dictionary with all homeworks that have done and with their solutions.
     """
 
-    homework_done = defaultdict(str)
+    homework_done = {}
 
     def create_homework(self, task: str, days: int) -> ClassVar:
         return Homework(task, days)
@@ -72,8 +69,7 @@ class Teacher(Student):
         if len(homework_result_obj.solution) > 5:
             Teacher.homework_done[homework_result_obj] = homework_result_obj.solution
             return True
-        else:
-            return False
+        return False
 
     def reset_results(self, *args: ClassVar) -> None:
         if args:
