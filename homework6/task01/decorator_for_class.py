@@ -1,4 +1,7 @@
-def instance_counter_decorator(orig_class):
+from typing import Any, Type
+
+
+def instance_counter_decorator(orig_class: Type) -> Type:
     class InstanceCounterClass:
         """
         Decorator that contains two additional methods
@@ -7,21 +10,17 @@ def instance_counter_decorator(orig_class):
 
         count = 0
 
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             self.original_class = orig_class(*args, **kwargs)
             InstanceCounterClass.count += 1
 
-        def get_instances_count(self):
+        def get_instances_count(self) -> int:
             return InstanceCounterClass.count
 
-        def clear_instances_count(self):
+        def clear_instances_count(self) -> None:
             InstanceCounterClass.count = 0
 
-        def __getattr__(self, attribute):
-            if attribute not in dir(self.original_class) and super().__getattribute__(
-                attribute
-            ):
-                raise AttributeError("There is not the attribute with such name")
-            return self.original_class.__getattribute__(attribute)
+        def __getattr__(self, attribute: Any) -> Any:
+            return getattr(self.original_class, attribute)
 
     return InstanceCounterClass
