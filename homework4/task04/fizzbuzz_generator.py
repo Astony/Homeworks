@@ -3,7 +3,7 @@ from typing import Generator
 """Generator of FizzBuzz numbers"""
 
 
-def fizzbuzz(len_out_sequence: int) -> Generator[int]:
+def fizzbuzz(len_out_sequence: int) -> Generator[int, str, None]:
     """Test of fizzbuzz
         Test, that our function generate right sequence:
     >>> list(fizzbuzz(6))
