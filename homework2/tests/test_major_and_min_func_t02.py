@@ -11,7 +11,7 @@ def test_of_positive_case():
 def test_negative_case():
     """How it was write in annotation, when input list contains several rarest number,
     we should take smallest from them"""
-    assert not major_and_minor_elem([1, 1, 1, 1, 1, 5, 6, 7]) == (1, 7)
+    assert not major_and_minor_elem([1, 1, 1, 1, 1, 5, 7, 6]) == (1, 7)
     assert major_and_minor_elem([1, 1, 1, 1, 1, 5, 6, 7]) == (1, 5)
 
 
