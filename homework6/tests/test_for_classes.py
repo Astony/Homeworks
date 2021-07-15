@@ -1,4 +1,5 @@
 import pytest
+
 from homework6.task02.hard_classes_task import (DeadlineError, Homework,
                                                 HomeworkResult, Student,
                                                 Teacher)
