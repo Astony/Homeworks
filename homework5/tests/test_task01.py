@@ -16,7 +16,7 @@ expired_homework = teacher.create_homework("Learn functions", 0)
 def test_of_homework_object():
     """Check homework object was created correctly"""
     assert expired_homework.task == "Learn functions"
-    assert expired_homework.is_active() == False
+    assert not expired_homework.is_active()
 
 
 create_homework_too = teacher.create_homework
@@ -26,7 +26,7 @@ oop_homework = create_homework_too("create 2 simple classes", 5)
 def test_creating_function_from_method():
     """Check the opportunity of teacher method to create homework object"""
     assert oop_homework.task == "create 2 simple classes"
-    assert oop_homework.is_active() == True
+    assert oop_homework.is_active()
 
 
 def test_of_student_method(capsys):

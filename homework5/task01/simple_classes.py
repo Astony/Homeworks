@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Any, ClassVar
 
 
 class Homework:
@@ -7,7 +8,7 @@ class Homework:
     day to finish it, data of creating and information about deadline
     """
 
-    def __init__(self, task: str, days: int):
+    def __init__(self, task: str, days: int) -> None:
         self.task = task
         self.days = days
         self.created = datetime.now()
@@ -23,16 +24,15 @@ class Student:
     if managed student do homework or not
     """
 
-    def __init__(self, first_name, last_name):
+    def __init__(self, first_name: str, last_name: str) -> None:
         self.first_name = first_name
         self.last_name = last_name
 
-    def do_homework(self, homework):
+    def do_homework(self, homework: ClassVar) -> Any:
         if homework.is_active():
             return homework
-        else:
-            print("You are late")
-            return None
+        print("You are late")
+        return None
 
 
 class Teacher:
@@ -40,9 +40,9 @@ class Teacher:
     Class Teacher contains info about teacher and have method to create homework
     """
 
-    def __init__(self, first_name, last_name):
+    def __init__(self, first_name: str, last_name: str) -> None:
         self.first_name = first_name
         self.last_name = last_name
 
-    def create_homework(self, task, days):
+    def create_homework(self, task: str, days: int) -> ClassVar:
         return Homework(task, days)

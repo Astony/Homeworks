@@ -1,4 +1,5 @@
-import functools
+from functools import reduce, update_wrapper
+from typing import Any, Callable, ClassVar, Tuple
 
 
 class Saver:
@@ -8,16 +9,16 @@ class Saver:
     original function
     """
 
-    def __init__(self, func):
+    def __init__(self, func: Callable) -> None:
         self.original_func = func
 
-    def __call__(self, *args, **kwargs):
-        return functools.update_wrapper(self, self.original_func)
+    def __call__(self, *args: Any, **kwargs: Any) -> ClassVar:
+        return update_wrapper(self, self.original_func)
 
 
-def print_result(func):
+def print_result(func: Callable) -> Callable:
     @Saver(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Callable:
         """Function-wrapper which print result of an original function"""
         result = func(*args, **kwargs)
         print(result)
@@ -27,6 +28,6 @@ def print_result(func):
 
 
 @print_result
-def custom_sum(*args):
+def custom_sum(*args: Tuple) -> Tuple:
     """This function can sum any objects which have __add___"""
-    return functools.reduce(lambda x, y: x + y, args)
+    return reduce(lambda x, y: x + y, args)
