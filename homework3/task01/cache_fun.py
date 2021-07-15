@@ -10,16 +10,12 @@ def cache(size: int) -> Callable:
         storage = {}
 
         def wrapper(*args, **kwargs):
-            if args not in storage:
+            if (not storage) or (storage and storage[args][1] >= size):
                 """Now we store both result of function and number of calls it"""
                 storage[args] = [func(*args, **kwargs), 0]
-                return storage[args][0]
             else:
                 storage[args][1] += 1
-                if storage[args][1] == size:
-                    result = storage[args][0]
-                    del storage[args]
-                return result
+            return storage[args][0]
 
         return wrapper
 
