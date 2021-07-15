@@ -6,11 +6,8 @@ is int, otherwise if it has another type, func return ValueError
 
 def read_magic_number(path: str) -> bool:
     with open(path, "r") as file:
-        line = file.readline().strip()
-        if line.isdigit():
-            if 1 <= int(line) < 3:
-                return True
-            else:
-                return False
-        else:
-            raise ValueError("It is not a magic number!")
+        try:
+            line = file.readline().strip()
+            return 1 <= float(line) < 3
+        except Exception as err:
+            raise ValueError("It is not a magic number!") from err

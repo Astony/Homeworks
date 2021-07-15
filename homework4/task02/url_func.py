@@ -1,4 +1,5 @@
 import requests
+from collections import Counter
 
 """
 Function get some url, check that the url exists
@@ -9,11 +10,7 @@ function's raise ValueError
 
 def count_i_chars(url: str) -> int:
     web_url = requests.get(url)
-    if web_url.status_code == 200:
-        counter = 0
-        for char in web_url.text:
-            if char == "i":
-                counter += 1
-        return counter
-    else:
+    if web_url.status_code != 200:
         raise ValueError("Unreachable {url}")
+    counter = Counter(web_url.text)
+    return counter["i"]

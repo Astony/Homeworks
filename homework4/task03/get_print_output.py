@@ -10,7 +10,7 @@ where text would be save
 def my_precious_logger(text: str):
     stdout_correct_text = sys.stdout
     stderr_error_text = sys.stderr
-    if text[0:5] == "error":
+    if text.startswith("error"):
         stderr_error_text.write(text)
     else:
         stdout_correct_text.write(text)
