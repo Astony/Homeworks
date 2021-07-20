@@ -20,4 +20,5 @@ draw_case = [["o", "x", "o"], ["x", "x", "o"], ["x", "o", "x"]]
     ],
 )
 def test_positive_cases(board, result):
+    """Check various cases of situation in tic tac toe board"""
     assert tic_tac_toe_checker(board) == result

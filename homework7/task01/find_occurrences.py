@@ -1,15 +1,19 @@
 from typing import Any
 
 
-def find_occurrences(tree: dict, required_element: Any) -> int:
+def find_occurrences(item: dict, required_element: Any) -> int:
+    """
+    The function gives access for all values in nested structure and allows
+                count the quantity of the required element.
+    """
     counter = 0
-    if tree == required_element:
+    if item == required_element:
         counter += 1
-    elif isinstance(tree, (list, set, tuple)):
-        for element in tree:
+    elif isinstance(item, (list, set, tuple)):
+        for element in item:
             counter += find_occurrences(element, required_element)
-    elif isinstance(tree, dict):
-        for key, value in tree.items():
+    elif isinstance(item, dict):
+        for key, value in item.items():
             if value == required_element:
                 counter += 1
             else:

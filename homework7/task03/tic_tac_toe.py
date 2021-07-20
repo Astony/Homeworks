@@ -2,6 +2,7 @@ from typing import List
 
 
 def tic_tac_toe_checker(board: List[List]) -> str:
+    """Function that analyze a situation on the tic tac toe"""
     diag1 = ""
     diag2 = ""
     for i in range(3):
