@@ -37,15 +37,19 @@ class HomeworkResult:
             self.homework = homework_obj
 
 
-class Student:
-    """
-    Class Student contains information about student and also have method to check
-    if managed student do homework or not
-    """
+class Person:
+    """Base class for students and teachers"""
 
     def __init__(self, first_name: str, last_name: str) -> None:
         self.first_name = first_name
         self.last_name = last_name
+
+
+class Student(Person):
+    """
+    Class Student contains information about student and also have method to check
+    if managed student do homework or not
+    """
 
     def do_homework(self, homework_obj: ClassVar, solution: str) -> ClassVar:
         if check_homework_type(homework_obj, Homework) and homework_obj.is_active():
@@ -54,7 +58,7 @@ class Student:
             raise DeadlineError("You are late")
 
 
-class Teacher(Student):
+class Teacher(Person):
     """
     Class Teacher contains info about teacher and have method to create homework and also
     here is the dictionary with all homeworks that have done and with their solutions.
