@@ -8,6 +8,7 @@ def save_orig_func_info(donor_func):
         recipient_func.__name__ = donor_func.__name__
         recipient_func.orig_func = donor_func
         return recipient_func
+
     return decorator
 
 
