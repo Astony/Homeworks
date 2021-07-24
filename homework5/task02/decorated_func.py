@@ -2,22 +2,17 @@ from functools import reduce, update_wrapper
 from typing import Any, Callable, ClassVar, Tuple
 
 
-class Saver:
-    """
-    Class Saver save original func in the separate attribute and also
-    use method update_wrapper to wrapper function and save all attributes of
-    original function
-    """
-
-    def __init__(self, func: Callable) -> None:
-        self.original_func = func
-
-    def __call__(self, *args: Any, **kwargs: Any) -> ClassVar:
-        return update_wrapper(self, self.original_func)
+def save_orig_func_info(donor_func):
+    def decorator(recipient_func):
+        recipient_func.__doc__ = donor_func.__doc__
+        recipient_func.__name__ = donor_func.__name__
+        recipient_func.orig_func = donor_func
+        return recipient_func
+    return decorator
 
 
 def print_result(func: Callable) -> Callable:
-    @Saver(func)
+    @save_orig_func_info(func)
     def wrapper(*args: Any, **kwargs: Any) -> Callable:
         """Function-wrapper which print result of an original function"""
         result = func(*args, **kwargs)

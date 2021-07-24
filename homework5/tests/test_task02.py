@@ -1,4 +1,4 @@
-from homework5.task02.decorated_func import Saver, custom_sum, print_result
+from homework5.task02.decorated_func import save_orig_func_info, custom_sum, print_result
 from homework5.task02.default_func import custom_sum_def, print_result_def
 
 
@@ -21,4 +21,4 @@ def test_with_Saver():
     """
     assert custom_sum.__doc__ == "This function can sum any objects which have __add___"
     assert custom_sum.__name__ == "custom_sum"
-    assert str(custom_sum.original_func)[1:20] == "function custom_sum"
+    assert 'orig_func' in custom_sum.__dict__
