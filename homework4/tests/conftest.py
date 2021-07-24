@@ -16,8 +16,7 @@ def file_with_true_and_false_value(inp):
     """
     with open(file, "w+") as test_file:
         test_file.write(inp)
-        test_file.close()
-        yield file
+    yield file
     os.remove(file)
 
 
@@ -28,8 +27,7 @@ def file_with_exception_value():
     """
     with open(file, "w+") as test_file:
         test_file.write("1 2 3 5")
-        test_file.close()
-        yield file
+    yield file
     os.remove(file)
 
 
@@ -38,7 +36,6 @@ def exist_of_file():
     """Check the existence of file after failed test"""
     with open(file, "w+") as test_file:
         test_file.write("3")
-        test_file.close()
-        yield file
+    yield file
     os.remove(file)
     assert not os.path.exists(file)
