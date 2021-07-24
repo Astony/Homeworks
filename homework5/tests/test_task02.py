@@ -1,8 +1,5 @@
-from homework5.task02.decorated_func import (
-    custom_sum,
-    print_result,
-    save_orig_func_info,
-)
+from homework5.task02.decorated_func import (custom_sum, print_result,
+                                             save_orig_func_info)
 from homework5.task02.default_func import custom_sum_def, print_result_def
 
 
