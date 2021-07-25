@@ -1,8 +1,9 @@
-from functools import reduce, update_wrapper
-from typing import Any, Callable, ClassVar, Tuple
+from functools import reduce
+from typing import Any, Callable, Tuple
 
 
 def save_orig_func_info(donor_func):
+    """Decorator that saves attributes of original function """
     def decorator(recipient_func):
         recipient_func.__doc__ = donor_func.__doc__
         recipient_func.__name__ = donor_func.__name__

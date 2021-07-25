@@ -6,9 +6,9 @@ from homework5.task02.decorated_func import (
 from homework5.task02.default_func import custom_sum_def, print_result_def
 
 
-def test_without_Saver():
+def test_without_decorator():
     """
-    Test for case without class-decorator. Attributes of wrapped function
+    Test for case without save-info decorator. Attributes of wrapped function
     have attributes of wrapper function
     """
     assert (
@@ -18,9 +18,9 @@ def test_without_Saver():
     assert custom_sum_def.__name__ == "wrapper"
 
 
-def test_with_Saver():
+def test_with_decorator():
     """
-    Test for case with class-decorator. Attributes of wrapped function
+    Test for case with save-info decorator. Attributes of wrapped function
     have attributes of original function
     """
     assert custom_sum.__doc__ == "This function can sum any objects which have __add___"
