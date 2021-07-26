@@ -1,6 +1,9 @@
 import os
+import sqlite3
 
 import pytest
+
+from homework8.task02.DataBaseClass import TableData
 
 file = "test_file.txt"
 
@@ -33,3 +36,22 @@ def create_file_with_clash_attr():
         test_file.write("__class__=boo")
     yield file
     os.remove(file)
+
+
+@pytest.fixture
+def presidents():
+    conn = sqlite3.connect("example.db")
+    cur = conn.cursor()
+    cur.execute("""CREATE TABLE presidents (name, country, id)""")
+    presidents = [
+        ("Trump", "America", 1),
+        ("Obama", "America", 2),
+        ("Putin", "Russia", 3),
+    ]
+    cur.executemany("INSERT INTO presidents VALUES (?, ?, ?)", presidents)
+    conn.commit()
+    conn.close()
+    president = TableData("example.db", "presidents")
+    yield president
+    president = None
+    os.remove("example.db")
