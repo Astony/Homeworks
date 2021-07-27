@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any, ClassVar
+from typing import Any
 
 
 class Homework:
@@ -10,7 +10,6 @@ class Homework:
 
     def __init__(self, task: str, days: int) -> None:
         self.task = task
-        self.days = days
         self.created = datetime.now()
         self.deadline = self.created + timedelta(days=days) - datetime.now()
 
@@ -28,7 +27,7 @@ class Student:
         self.first_name = first_name
         self.last_name = last_name
 
-    def do_homework(self, homework: ClassVar) -> Any:
+    def do_homework(self, homework: Homework) -> Any:
         if homework.is_active():
             return homework
         print("You are late")
@@ -44,5 +43,6 @@ class Teacher:
         self.first_name = first_name
         self.last_name = last_name
 
-    def create_homework(self, task: str, days: int) -> ClassVar:
+    @staticmethod
+    def create_homework(task: str, days: int) -> Homework:
         return Homework(task, days)
