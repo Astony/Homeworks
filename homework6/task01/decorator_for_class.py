@@ -1,26 +1,24 @@
-from typing import Any, Type
+from typing import Type
 
 
-def instance_counter_decorator(orig_class: Type) -> Type:
-    class InstanceCounterClass:
-        """
-        Decorator that contains two additional methods
-        for count number of objects of original class and reset that counter
-        """
+def instance_counter_decorator(cls: Type) -> Type:
+    """Decorator that adds additional methods for decorated class"""
+    cls.created_instances_counter = 0
 
-        count = 0
+    def __new__(self):
+        instance = super(cls, cls).__new__(cls)
+        cls.created_instances_counter += 1
+        return instance
 
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            self.original_class = orig_class(*args, **kwargs)
-            InstanceCounterClass.count += 1
+    @classmethod
+    def get_instances_count(cls: Type) -> int:
+        return cls.created_instances_counter
 
-        def get_instances_count(self) -> int:
-            return InstanceCounterClass.count
+    @classmethod
+    def clear_instances_count(cls: Type) -> None:
+        cls.created_instances_counter = 0
 
-        def clear_instances_count(self) -> None:
-            InstanceCounterClass.count = 0
-
-        def __getattr__(self, attribute: Any) -> Any:
-            return getattr(self.original_class, attribute)
-
-    return InstanceCounterClass
+    cls.__new__ = __new__
+    cls.get_instances_count = get_instances_count
+    cls.clear_instances_count = clear_instances_count
+    return cls
