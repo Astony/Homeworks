@@ -1,5 +1,6 @@
 import pytest
 
+from homework6.task02.check_homework_type import InvalidError
 from homework6.task02.hard_classes_task import (
     DeadlineError,
     Homework,
@@ -39,13 +40,9 @@ some_object = SomeClass()
 
 def test_HomeworkResult_wrong_type_of_input_attribute():
     """Checking that non-Homework type as an argument of do_homework raises error"""
-    with pytest.raises(
-        AttributeError, match="Argument should has Homeworks class type"
-    ):
+    with pytest.raises(InvalidError, match="Argument should has Homeworks class type"):
         good_student.do_homework(some_object, "I have done something wrong, isn't it?")
-    with pytest.raises(
-        AttributeError, match="Argument should has Homeworks class type"
-    ):
+    with pytest.raises(InvalidError, match="Argument should has Homeworks class type"):
         HomeworkResult(good_student, some_object, "abacaba")
 
 
@@ -75,16 +72,15 @@ another_teacher.check_homework(another_good_result)
 
 def test_dict_contain():
     """Check Teacher's dict content"""
-    dict_element = Teacher.homework_done[good_result]
     assert len(master_teacher.homework_done.keys()) == 2
-    assert dict_element == "Make some pot"
+    assert Teacher.homework_done[good_result] == "Make some pot"
 
 
 def test_reset_results_method():
     """Check reset results method with correct argument"""
     master_teacher.reset_results(good_result)
     assert len(master_teacher.homework_done) == 1
-    assert list(another_teacher.homework_done.keys())[0] is another_good_result
+    assert tuple(another_teacher.homework_done.keys())[0] is another_good_result
     assert another_teacher.homework_done is master_teacher.homework_done
 
 
@@ -92,8 +88,3 @@ def test_full_reset():
     """Check reset results method without arguments"""
     master_teacher.reset_results()
     assert len(another_teacher.homework_done) == 0
-
-
-def test_of_wrong_attributes_for_reset_method():
-    """Check reset results method with incorrect arguments"""
-    assert not master_teacher.reset_results(some_object, 5)
