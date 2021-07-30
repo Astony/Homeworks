@@ -5,9 +5,9 @@ def instance_counter_decorator(cls: Type) -> Type:
     """Decorator that adds additional methods for decorated class"""
     cls.created_instances_counter = 0
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(parent, *args, **kwargs):
         instance = super(cls.__class__, cls).__new__(cls, *args, **kwargs)
-        cls.created_instances_counter += 1
+        parent.created_instances_counter += 1
         return instance
 
     @classmethod
