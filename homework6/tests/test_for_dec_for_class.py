@@ -34,7 +34,7 @@ def test_count_instances_method():
 
 
 def test_clear_instances_method():
-    foo_class2.clear_instances_count()
+    assert foo_class2.clear_instances_count() == 2
     assert foo_class2.get_instances_count() == foo_class1.get_instances_count() == 0
     assert boo_class1.get_instances_count() == 1
 
