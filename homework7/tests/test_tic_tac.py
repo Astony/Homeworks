@@ -1,6 +1,6 @@
 import pytest
 
-from homework7.task03.tic_tac_toe import tic_tac_toe_checker
+from homework7.task03.tic_tac_toe import Board
 
 x_wins = [["-", "-", "o"], ["-", "o", "o"], ["x", "x", "x"]]
 o_wins = [["o", "-", "-"], ["o", "x", "-"], ["o", "x", "x"]]
@@ -21,4 +21,5 @@ draw_case = [["o", "x", "o"], ["x", "x", "o"], ["x", "o", "x"]]
 )
 def test_positive_cases(board, result):
     """Check various cases of situation in tic tac toe board"""
-    assert tic_tac_toe_checker(board) == result
+    board_check = Board(board)
+    assert board_check.check_board() == result

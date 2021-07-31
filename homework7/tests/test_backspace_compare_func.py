@@ -6,10 +6,10 @@ from homework7.task02.backspace_compare import backspace_compare
 @pytest.mark.parametrize(
     "str1, str2, result",
     [
-        ("ab    c", "   ad c", True),
-        ("a       c", "   a   c", True),
-        ("ab    c", "   r", False),
-        ("     ", " ", True),
+        ("ab####c", "   ad#c", True),
+        ("a###c", "##a#c", True),
+        ("ab###c", "###r", False),
+        ("###", "#", True),
         ("equal", "equal", True),
     ],
 )
