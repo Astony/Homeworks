@@ -46,9 +46,8 @@ class TableData:
         return self
 
     def __next__(self):
-        index = self.iteration_step
         self.cursor.execute(
-            f"""SELECT * FROM {self.table} limit {index} - 1, {index}"""
+            f"""SELECT * FROM {self.table} limit {self.iteration_step} - 1, {self.iteration_step}"""
         )
         item = self.cursor.fetchone()
         if item:
