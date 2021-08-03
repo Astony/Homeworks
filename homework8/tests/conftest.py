@@ -15,31 +15,15 @@ All fixtures create file, write some rows inside,
 
 
 @pytest.fixture()
-def create_file_with_valid_attr_val():
+def create_file_with_text(text: str):
     with open(file, "w+") as test_file:
-        test_file.write("name=kek\nlast_name=2")
-    yield file
-    os.remove(file)
-
-
-@pytest.fixture()
-def create_file_with_invalid_attr_val():
-    with open(file, "w+") as test_file:
-        test_file.write("1=invalid_attribute")
-    yield file
-    os.remove(file)
-
-
-@pytest.fixture()
-def create_file_with_clash_attr():
-    with open(file, "w+") as test_file:
-        test_file.write("__class__=boo")
+        test_file.write(text)
     yield file
     os.remove(file)
 
 
 @pytest.fixture
-def presidents():
+def create_db():
     conn = sqlite3.connect("example.db")
     cur = conn.cursor()
     cur.execute("""CREATE TABLE presidents (name, country, id)""")
@@ -51,7 +35,5 @@ def presidents():
     cur.executemany("INSERT INTO presidents VALUES (?, ?, ?)", presidents)
     conn.commit()
     conn.close()
-    president = TableData("example.db", "presidents")
-    yield president
-    president = None
+    yield "example.db"
     os.remove("example.db")

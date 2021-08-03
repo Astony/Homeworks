@@ -1,21 +1,4 @@
-from typing import Any, List
-
-
-def read_valid_attributes_and_values(path: str) -> List:
-    """Function that reads and checks attributes and values from file."""
-    valid_attributes_and_values = []
-    with open(path, "r") as file:
-        attr_and_val = file.read().split()
-    for pair in attr_and_val:
-        attribute, value = pair.split("=")
-        if attribute.isdigit():
-            raise ValueError("Invalid name for attribute")
-        elif attribute in dir(KeyValueStorage):
-            continue
-        elif value.isdigit():
-            value = int(value)
-        valid_attributes_and_values.append((attribute, value))
-    return valid_attributes_and_values
+from typing import Any
 
 
 class KeyValueStorage:
@@ -24,12 +7,19 @@ class KeyValueStorage:
     accessible as collection and as attributes.
     """
 
-    def __init__(self, path: str) -> None:
-        valid_attributes_and_values = read_valid_attributes_and_values(path)
-        for attribute, value in valid_attributes_and_values:
-            setattr(self, attribute, value)
+    def __init__(self, file_path: str) -> None:
+        self.file_path = file_path
+        with open(file_path) as file:
+            for pair in file:
+                argument, value = pair.strip().split("=")
+                try:
+                    if argument.isidentifier() and argument not in dir(self):
+                        self.__dict__[argument] = int(value)
+                except ValueError:
+                    self.__dict__[argument] = value
 
-    def __getitem__(self, attribute: str) -> Any:
-        if attribute in dir(self):
-            return getattr(self, attribute)
-        return self.__dict__[attribute]
+    def __getitem__(self, item: str) -> Any:
+        if item in self.__dict__ or item in dir(self):
+            return getattr(self, item)
+        else:
+            raise ValueError("No such key")

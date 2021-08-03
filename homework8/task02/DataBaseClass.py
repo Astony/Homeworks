@@ -2,82 +2,63 @@ import os
 import sqlite3
 
 
-def open_close_conn(method):
-    """Decorator that opens and closes connection"""
-
-    def wrapper(self, *args):
-        try:
-            conn = sqlite3.connect(self.database)
-            cursor = conn.cursor()
-            result = method(self, cursor, *args)
-            return result
-        except Exception as err:
-            print(f"Something has gone wrong. It has caused the {err}")
-        finally:
-            conn.commit()
-            conn.close()
-
-    return wrapper
-
-
 class TableData:
     """
     Class allows to get a length of db, get some element from db
          and also it has method to add some element to db
     """
 
+    @staticmethod
+    def validating_db(database: str) -> str:
+        if os.path.exists(database):
+            return database
+        raise IOError("No such db")
+
+    @staticmethod
+    def validating_table(table: str) -> str:
+        if len(table) < 15 and " " not in table and table.isidentifier():
+            return table
+        raise ValueError("Invalid tables name")
+
     def __init__(self, database, table):
-        if not os.path.exists(database):
-            raise IOError("No such db")
-        self.database = database
-        self.table = table
+        self.database = TableData.validating_db(database)
+        self.table = TableData.validating_table(table)
         self.iteration_step = 1
 
-    @open_close_conn
-    def len_of_database(self, cursor):
-        cursor.execute(f"""SELECT COUNT(name) FROM {self.table}""")
-        return cursor.fetchone()[0]
+    def __enter__(self):
+        self.conn = sqlite3.connect(self.database)
+        self.cursor = self.conn.cursor()
+        return self
 
-    @open_close_conn
-    def search_element(self, cursor, name):
-        cursor.execute(f"""SELECT * FROM {self.table} WHERE name='{name}'""")
-        result = cursor.fetchone()
-        if not result:
-            raise ValueError("'There is no such element in db'")
-        return result
-
-    @open_close_conn
-    def search_element_while_iterating(self, cursor):
-        cur = cursor.execute(
-            f"""SELECT * FROM {self.table} 
-        WHERE id = {self.iteration_step}"""
-        )
-        item = cur.fetchone()
-        self.iteration_step += 1
-        return {"name": item[0], "country": item[1]}
-
-    @open_close_conn
-    def additem(self, cursor, item):
-        cursor.executemany(f"INSERT INTO {self.table} VALUES (?, ?, ?)", item)
+    def __exit__(self, *args, **kwargs):
+        self.conn.close()
 
     def __len__(self):
-        return self.len_of_database()
+        self.cursor.execute(f"""SELECT COUNT(name) FROM {self.table}""")
+        return self.cursor.fetchone()[0]
 
     def __getitem__(self, item):
-        return self.search_element(item)
+        self.cursor.execute(f"""SELECT * FROM {self.table} WHERE name='%s';""" % item)
+        result = self.cursor.fetchone()
+        return result if result else []
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        length = self.len_of_database()
-        while self.iteration_step <= length:
-            return self.search_element_while_iterating()
+        index = self.iteration_step
+        self.cursor.execute(
+            f"""SELECT * FROM {self.table} limit {index} - 1, {index}"""
+        )
+        item = self.cursor.fetchone()
+        if item:
+            self.iteration_step += 1
+            return {"name": item[0], "country": item[1]}
         self.iteration_step = 0
         raise StopIteration
 
     def __contains__(self, item):
         try:
-            return bool(self.search_element(item))
+            return bool(self.__getitem__(item))
         except ValueError:
             return False
