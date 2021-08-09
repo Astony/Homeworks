@@ -19,7 +19,7 @@ class MockParser(Parser):
 
 def test_dollar_price_func():
     """Test that Parser method parses information about dollar price correct"""
-    with open("dollar_price_file.html", "r", encoding="utf-8") as file:
+    with open("tests/dollar_price_file.html", "r", encoding="utf-8") as file:
         html_text = file.read()
     with patch("requests.get") as mock_request:
         url = "fake"
@@ -31,7 +31,7 @@ def test_dollar_price_func():
 @patch("aiohttp.ClientSession.get")
 async def test_get_links_and_growths_func(mock_get):
     """Test that Parser method parses links and year growths correct"""
-    with open("page1info.html", "r", encoding="utf-8") as file:
+    with open("tests/page1info.html", "r", encoding="utf-8") as file:
         html_text = file.read()
     parser = MockParser()
     mock_get.return_value.__aenter__.return_value.text = CoroutineMock(
@@ -46,7 +46,7 @@ async def test_get_links_and_growths_func(mock_get):
 @patch("aiohttp.ClientSession.get")
 async def test_get_main_company_info(mock_get):
     """Test that Parser method parses info from companies page correct"""
-    with open("testing_company_page.html", "r", encoding="utf-8") as file:
+    with open("tests/testing_company_page.html", "r", encoding="utf-8") as file:
         html_text = file.read()
     parser = MockParser()
     mock_get.return_value.__aenter__.return_value.text = CoroutineMock(
