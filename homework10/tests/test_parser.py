@@ -46,7 +46,9 @@ async def test_get_links_and_growths_func(mock_get):
 @patch("aiohttp.ClientSession.get")
 async def test_get_main_company_info(mock_get):
     """Test that Parser method parses info from companies page correct"""
-    with open("homework10/tests/testing_company_page.html", "r", encoding="utf-8") as file:
+    with open(
+        "homework10/tests/testing_company_page.html", "r", encoding="utf-8"
+    ) as file:
         html_text = file.read()
     parser = MockParser()
     mock_get.return_value.__aenter__.return_value.text = CoroutineMock(
