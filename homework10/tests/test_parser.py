@@ -20,10 +20,10 @@ class MockParser(Parser):
 
 def test_dollar_price_func():
     """Test that Parser method parses information about dollar price correct"""
-    file = Path.cwd() / "tests" / "dollar_price_file.html"
+    with open("dollar_price_file.html", "r", encoding="utf-8") as file:
+        html_text = file.read()
     with patch("requests.get") as mock_request:
         url = "fake"
-        html_text = file.read_text(encoding="utf-8")
         mock_request.return_value.text = html_text
         assert Parser.dollar_convert(url) == float(30)
 
@@ -32,8 +32,8 @@ def test_dollar_price_func():
 @patch("aiohttp.ClientSession.get")
 async def test_get_links_and_growths_func(mock_get):
     """Test that Parser method parses links and year growths correct"""
-    file = Path.cwd() / "tests" / "page1info.html"
-    html_text = file.read_text(encoding="utf-8")
+    with open("page1info.html", "r", encoding="utf-8") as file:
+        html_text = file.read()
     parser = MockParser()
     mock_get.return_value.__aenter__.return_value.text = CoroutineMock(
         side_effect=[html_text]
@@ -47,8 +47,8 @@ async def test_get_links_and_growths_func(mock_get):
 @patch("aiohttp.ClientSession.get")
 async def test_get_main_company_info(mock_get):
     """Test that Parser method parses info from companies page correct"""
-    file = Path.cwd() / "tests" / "testing_company_page.html"
-    html_text = file.read_text(encoding="utf-8")
+    with open("testing_company_page.html", "r", encoding="utf-8") as file:
+        html_text = file.read()
     parser = MockParser()
     mock_get.return_value.__aenter__.return_value.text = CoroutineMock(
         side_effect=[html_text]
