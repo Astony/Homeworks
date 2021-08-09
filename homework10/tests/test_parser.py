@@ -3,6 +3,7 @@ from pathlib import Path
 from unittest.mock import patch
 import aiohttp
 import pytest
+
 from asynctest import CoroutineMock, patch
 from homework10.task.parser import Parser, StockAnalyzer
 
