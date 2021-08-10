@@ -1,5 +1,6 @@
 import asyncio
 import json
+from typing import List, Tuple
 
 import aiohttp
 import requests
@@ -8,7 +9,7 @@ from bs4 import BeautifulSoup
 
 class Parser:
     @staticmethod
-    def dollar_convert(url):
+    def dollar_convert(url: str) -> float:
         """Method that parse information about dollar price on today"""
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "lxml")
@@ -16,7 +17,7 @@ class Parser:
             soup.find("div", class_="currency-table__large-text").text.replace(",", ".")
         )
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.url = "https://markets.businessinsider.com/index/components/s&p_500?p="
         self.main_url = self.url.split("index")[0]
         self.dollar_price = Parser.dollar_convert(
@@ -24,7 +25,7 @@ class Parser:
         )
         self.pages = list(range(1, 12))
 
-    async def gather_links_and_year_growth(self):
+    async def gather_links_and_year_growth(self) -> Tuple[List, List]:
         """Method that creates tasks and return tuple of all companies links and their years gains"""
         links = []
         gains = []
@@ -39,7 +40,9 @@ class Parser:
                 gains.extend(task.result()[1])
         return links, gains
 
-    async def get_links_and_year_growth(self, session, page):
+    async def get_links_and_year_growth(
+        self, session: aiohttp.ClientSession, page: str
+    ) -> Tuple:
         """Method, that parses information about companies links and their gains"""
         async with session.get(self.url + page) as response:
             response_text = await response.text()
@@ -52,7 +55,7 @@ class Parser:
             year_growths = [tr.find_all("td")[7].text.split()[1] for tr in all_tr]
         return companies_links, year_growths
 
-    async def gather_main_company_info(self, links):
+    async def gather_main_company_info(self, links: List[str]) -> Tuple:
         """Method that creates tasks and return tuple of company code, total price, PE_ratio and 52 week difference"""
         codes, prices, PEs, weeks = [], [], [], []
         async with aiohttp.ClientSession() as session:
@@ -68,7 +71,9 @@ class Parser:
                 weeks.append(task.result()[3])
         return codes, prices, PEs, weeks
 
-    async def get_main_company_info(self, session, url):
+    async def get_main_company_info(
+        self, session: aiohttp.ClientSession, url: str
+    ) -> Tuple:
         """Method that parses all info about company from company's page"""
 
         async with session.get(url) as response:
@@ -81,11 +86,11 @@ class Parser:
         return code, price, PE, week52
 
     @staticmethod
-    def get_code(soup):
+    def get_code(soup: BeautifulSoup) -> str:
         """Method that parses company's code"""
         return soup.find(class_="price-section__category").find("span").text.split()[1]
 
-    def get_MarketCap(self, soup):
+    def get_MarketCap(self, soup: BeautifulSoup) -> float:
         """Method that parses company's total price in rub"""
         table_with_data = soup.find_all(class_="snapshot__data-item")
         for data in table_with_data:
@@ -98,7 +103,7 @@ class Parser:
                 )
 
     @staticmethod
-    def get_PE(soup):
+    def get_PE(soup: BeautifulSoup) -> float:
         """Method that parses company's PE ratio"""
         table_with_data = soup.find_all(class_="snapshot__data-item")
         for data in table_with_data:
@@ -108,7 +113,7 @@ class Parser:
         return 0
 
     @staticmethod
-    def get_52week_info(soup):
+    def get_52week_info(soup: BeautifulSoup) -> float:
         """Method that parses company's 52 weeks difference"""
         try:
             low_info = soup.find_all(
@@ -123,7 +128,7 @@ class Parser:
         except IndexError:
             return 0
 
-    def parse(self):
+    def parse(self) -> None:
         """Method that writes info about all companies in json file"""
         loop = asyncio.get_event_loop()
         company_info = []
@@ -156,17 +161,17 @@ class Parser:
 class StockAnalyzer:
     """Class that analyzes info about different companies"""
 
-    def __init__(self, companies_info_file="companies_info.json"):
+    def __init__(self, companies_info_file: str = "companies_info.json"):
         with open(companies_info_file) as file:
             self.companies_info = json.load(file)
 
     @staticmethod
-    def create_json_file(name, data):
+    def create_json_file(name: str, data: List) -> None:
         """Method that creates json file"""
         with open(f"{name}.json", "a") as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
-    def top10_prices(self):
+    def top10_prices(self) -> None:
         """Method that creates json file with top 10 companies the highest total price"""
         top10prices = sorted(
             self.companies_info, key=lambda k: k["Company price"], reverse=True
@@ -175,7 +180,7 @@ class StockAnalyzer:
             element["Company price"] = str(element["Company price"]) + " B"
         StockAnalyzer.create_json_file("Top_10_Most_expensive", top10prices)
 
-    def top10_PE(self):
+    def top10_PE(self) -> None:
         """Method that creates json file with top 10 companies the fewest total price"""
         top10PE = (
             element for element in self.companies_info if element["P/E Ratio"] != 0
@@ -183,7 +188,7 @@ class StockAnalyzer:
         top10PE = sorted(top10PE, key=lambda k: k["P/E Ratio"], reverse=False)[:10]
         StockAnalyzer.create_json_file("Top_10_fewest_PE_ratio", top10PE)
 
-    def top10_growth(self):
+    def top10_growth(self) -> None:
         """Method that creates json file with top 10 companies the highest year growth of stoks prices"""
         top10growth = sorted(
             self.companies_info,
@@ -192,7 +197,7 @@ class StockAnalyzer:
         )[:10]
         StockAnalyzer.create_json_file("Top_10_the_most_growth_per_year", top10growth)
 
-    def top10_52weeks_difference(self):
+    def top10_52weeks_difference(self) -> None:
         """Method that creates json file with top 10 companies the highest 52 weeks difference"""
         top10_52weeks_difference = sorted(
             self.companies_info, key=lambda k: k["Week52 difference"], reverse=True
@@ -201,7 +206,7 @@ class StockAnalyzer:
             "Top_10_Most_difference_52_weeks", top10_52weeks_difference
         )
 
-    def analyze(self):
+    def analyze(self) -> None:
         """Method that creates all top10 json files"""
         func_list = [
             self.top10_PE,
