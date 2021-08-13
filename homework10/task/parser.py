@@ -1,6 +1,7 @@
 import asyncio
 import json
-from typing import List, Tuple
+from collections import defaultdict
+from typing import Callable, Dict, List, Tuple
 
 import aiohttp
 import requests
@@ -12,10 +13,26 @@ class Parser:
     def dollar_convert(url: str) -> float:
         """Method that parse information about dollar price on today"""
         req = requests.get(url)
-        soup = BeautifulSoup(req.text, "lxml")
         return float(
-            soup.find("div", class_="currency-table__large-text").text.replace(",", ".")
+            BeautifulSoup(req.text, "lxml")
+            .find("div", class_="currency-table__large-text")
+            .text.replace(",", ".")
         )
+
+    @staticmethod
+    async def fetch_all(function: Callable, urls: List) -> List:
+        """Method that creates tasks and return results of tasks"""
+        async with aiohttp.ClientSession() as session:
+            tasks = [asyncio.create_task(function(session, url)) for url in urls]
+            await asyncio.gather(*tasks)
+            return tasks
+
+    @staticmethod
+    async def get_soup(session, url) -> BeautifulSoup:
+        """Method that get url and return soup object"""
+        async with session.get(url) as response:
+            response_text = await response.text()
+            return BeautifulSoup(response_text, "lxml")
 
     def __init__(self) -> None:
         self.url = "https://markets.businessinsider.com/index/components/s&p_500?p="
@@ -23,94 +40,76 @@ class Parser:
         self.dollar_price = Parser.dollar_convert(
             "https://www.banki.ru/products/currency/usd/"
         )
-        self.pages = list(range(1, 12))
-
-    async def gather_links_and_year_growth(self) -> Tuple[List, List]:
-        """Method that creates tasks and return tuple of all companies links and their years gains"""
-        links = []
-        gains = []
-        async with aiohttp.ClientSession() as session:
-            tasks = [
-                asyncio.create_task(self.get_links_and_year_growth(session, str(page)))
-                for page in self.pages
-            ]
-            await asyncio.gather(*tasks)
-            for task in tasks:
-                links.extend(task.result()[0])
-                gains.extend(task.result()[1])
-        return links, gains
+        self.pages = [self.url + str(page) for page in range(1, 2)]
 
     async def get_links_and_year_growth(
         self, session: aiohttp.ClientSession, page: str
     ) -> Tuple:
         """Method, that parses information about companies links and their gains"""
-        async with session.get(self.url + page) as response:
-            response_text = await response.text()
-            soup = BeautifulSoup(response_text, "lxml")
-            hrefs_from_page = soup.find_all(class_="table__td table__td--big")
-            companies_links = [
-                self.main_url + item.find("a").get("href") for item in hrefs_from_page
-            ]
-            all_tr = soup.find(class_="table__tbody").find_all("tr")
-            year_growths = [tr.find_all("td")[7].text.split()[1] for tr in all_tr]
-        return companies_links, year_growths
+        soup = await Parser.get_soup(session, page)
+        hrefs_tags_from_page = soup.find_all(class_="table__td table__td--big")
+        companies_urls = [
+            self.main_url + item.find("a").get("href") for item in hrefs_tags_from_page
+        ]
+        all_tr_tags = soup.find(class_="table__tbody").find_all("tr")
+        year_growths = [tr.find_all("td")[7].text.split()[1] for tr in all_tr_tags]
+        return companies_urls, year_growths
 
-    async def gather_main_company_info(self, links: List[str]) -> Tuple:
-        """Method that creates tasks and return tuple of company code, total price, PE_ratio and 52 week difference"""
-        codes, prices, PEs, weeks = [], [], [], []
-        async with aiohttp.ClientSession() as session:
-            tasks = [
-                asyncio.create_task(self.get_main_company_info(session, url))
-                for url in links
-            ]
-            await asyncio.gather(*tasks)
-            for task in tasks:
-                codes.append(task.result()[0])
-                prices.append(task.result()[1])
-                PEs.append(task.result()[2])
-                weeks.append(task.result()[3])
-        return codes, prices, PEs, weeks
+    async def gather_links_and_year_growth(self) -> Tuple[List, List]:
+        """Method that creates tasks and return tuple of all companies links and their years gains"""
+        links = []
+        gains = []
+        tasks = await Parser.fetch_all(self.get_links_and_year_growth, self.pages)
+        for task in tasks:
+            links.extend(task.result()[0])
+            gains.extend(task.result()[1])
+        return links, gains
 
     async def get_main_company_info(
         self, session: aiohttp.ClientSession, url: str
     ) -> Tuple:
         """Method that parses all info about company from company's page"""
-
-        async with session.get(url) as response:
-            response_text = await response.text()
-            soup = BeautifulSoup(response_text, "lxml")
-            code = Parser.get_code(soup)
-            price = self.get_MarketCap(soup)
-            PE = Parser.get_PE(soup)
-            week52 = Parser.get_52week_info(soup)
+        soup = await Parser.get_soup(session, url)
+        code = Parser.get_code(soup)
+        MarketCapPrice_and_PEratio = self.get_MarketCap_and_PE(soup)
+        price = MarketCapPrice_and_PEratio["Market Cap"]
+        PE = MarketCapPrice_and_PEratio["P/E Ratio"]
+        week52 = Parser.get_52week_info(soup)
         return code, price, PE, week52
+
+    async def gather_main_company_info(self, links: List[str]) -> Tuple:
+        """Method that creates tasks and return tuple of company code, total price, PE_ratio and 52 week difference"""
+        codes, prices, PE, weeks = [], [], [], []
+        tasks = await Parser.fetch_all(self.get_main_company_info, links)
+        for task in tasks:
+            codes.append(task.result()[0])
+            prices.append(task.result()[1])
+            PE.append(task.result()[2])
+            weeks.append(task.result()[3])
+        return codes, prices, PE, weeks
 
     @staticmethod
     def get_code(soup: BeautifulSoup) -> str:
         """Method that parses company's code"""
         return soup.find(class_="price-section__category").find("span").text.split()[1]
 
-    def get_MarketCap(self, soup: BeautifulSoup) -> float:
+    def get_MarketCap_and_PE(self, soup: BeautifulSoup) -> Dict:
         """Method that parses company's total price in rub"""
         table_with_data = soup.find_all(class_="snapshot__data-item")
+        MarketCap_and_PEratio_dict = defaultdict(float)
         for data in table_with_data:
             element = data.text.strip().split("\n")
             if element[-1].strip() == "Market Cap":
-                return round(
+                MarketCap_and_PEratio_dict["Market Cap"] = round(
                     float(element[0].split()[0].strip().replace(",", ""))
                     * self.dollar_price,
                     3,
                 )
-
-    @staticmethod
-    def get_PE(soup: BeautifulSoup) -> float:
-        """Method that parses company's PE ratio"""
-        table_with_data = soup.find_all(class_="snapshot__data-item")
-        for data in table_with_data:
-            element = data.text.strip().split("\n")
-            if element[-1].strip() == "P/E Ratio":
-                return float(element[0].strip().replace(",", ""))
-        return 0
+            elif element[-1].strip() == "P/E Ratio":
+                MarketCap_and_PEratio_dict["P/E Ratio"] = float(
+                    element[0].strip().replace(",", "")
+                )
+        return MarketCap_and_PEratio_dict
 
     @staticmethod
     def get_52week_info(soup: BeautifulSoup) -> float:
