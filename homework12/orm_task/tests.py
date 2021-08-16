@@ -1,7 +1,5 @@
 from django.core.management import call_command
-
 from django.test import TestCase
-
 from orm_task.models import Homework, HomeworkResult, Student, Teacher
 
 
