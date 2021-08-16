@@ -4,17 +4,17 @@ from collections import defaultdict
 from typing import Callable, Dict, List, Tuple
 
 import aiohttp
-import requests
 from bs4 import BeautifulSoup
 
 
 class Parser:
-    @staticmethod
-    def dollar_convert(url: str) -> float:
-        """Method that parse information about dollar price on today"""
-        req = requests.get(url)
+    async def dollar_convert(url: str) -> float:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                """Function get information about currency dollar price in rub"""
+                text = await response.text()
         return float(
-            BeautifulSoup(req.text, "lxml")
+            BeautifulSoup(text, "lxml")
             .find("div", class_="currency-table__large-text")
             .text.replace(",", ".")
         )
@@ -37,10 +37,7 @@ class Parser:
     def __init__(self) -> None:
         self.url = "https://markets.businessinsider.com/index/components/s&p_500?p="
         self.main_url = self.url.split("index")[0]
-        self.dollar_price = Parser.dollar_convert(
-            "https://www.banki.ru/products/currency/usd/"
-        )
-        self.pages = [self.url + str(page) for page in range(1, 2)]
+        self.pages = [self.url + str(page) for page in range(1, 12)]
 
     async def get_links_and_year_growth(
         self, session: aiohttp.ClientSession, page: str
@@ -55,8 +52,11 @@ class Parser:
         year_growths = [tr.find_all("td")[7].text.split()[1] for tr in all_tr_tags]
         return companies_urls, year_growths
 
-    async def gather_links_and_year_growth(self) -> Tuple[List, List]:
+    async def gather_links_and_year_growth_dollar_price(self) -> Tuple[List, List]:
         """Method that creates tasks and return tuple of all companies links and their years gains"""
+        self.dollar_price = await Parser.dollar_convert(
+            "https://www.banki.ru/products/currency/usd/"
+        )
         links = []
         gains = []
         tasks = await Parser.fetch_all(self.get_links_and_year_growth, self.pages)
@@ -129,6 +129,7 @@ class Parser:
 
     def parse(self) -> None:
         """Method that writes info about all companies in json file"""
+
         loop = asyncio.get_event_loop()
         company_info = []
         parameters = [
@@ -139,7 +140,7 @@ class Parser:
             "Week52 difference",
         ]
         links, year_growths = loop.run_until_complete(
-            self.gather_links_and_year_growth()
+            self.gather_links_and_year_growth_dollar_price()
         )
         codes, prices, PEs, weeks = loop.run_until_complete(
             self.gather_main_company_info(links)
@@ -160,15 +161,21 @@ class Parser:
 class StockAnalyzer:
     """Class that analyzes info about different companies"""
 
-    def __init__(self, companies_info_file: str = "companies_info.json"):
-        with open(companies_info_file) as file:
-            self.companies_info = json.load(file)
-
     @staticmethod
     def create_json_file(name: str, data: List) -> None:
         """Method that creates json file"""
         with open(f"{name}.json", "a") as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
+
+    @staticmethod
+    def open_and_read_companies_info_file(
+        companies_info_file: str = "companies_info.json",
+    ):
+        with open(companies_info_file) as file:
+            return json.load(file)
+
+    def __init__(self):
+        self.companies_info = StockAnalyzer.open_and_read_companies_info_file()
 
     def top10_prices(self) -> None:
         """Method that creates json file with top 10 companies the highest total price"""
@@ -207,11 +214,7 @@ class StockAnalyzer:
 
     def analyze(self) -> None:
         """Method that creates all top10 json files"""
-        func_list = [
-            self.top10_PE,
-            self.top10_growth,
-            self.top10_prices,
-            self.top10_52weeks_difference,
-        ]
-        for func in func_list:
-            func()
+        self.top10_PE()
+        self.top10_growth()
+        self.top10_prices()
+        self.top10_52weeks_difference()
