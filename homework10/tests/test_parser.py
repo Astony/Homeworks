@@ -1,5 +1,4 @@
 import json
-from unittest.mock import patch
 
 import aiohttp
 import pytest
@@ -17,14 +16,17 @@ class MockParser(Parser):
         self.main_url = ""
 
 
-def test_dollar_price_func():
+@pytest.mark.asyncio
+@patch("aiohttp.ClientSession.get")
+async def test_dollar_price_func(mock_get):
     """Test that Parser method parses information about dollar price correct"""
     with open("homework10/tests/dollar_price_file.html", "r", encoding="utf-8") as file:
         html_text = file.read()
-    with patch("requests.get") as mock_request:
-        url = "fake"
-        mock_request.return_value.text = html_text
-        assert Parser.dollar_convert(url) == float(30)
+    mock_get.return_value.__aenter__.return_value.text = CoroutineMock(
+        side_effect=[html_text]
+    )
+    result = await MockParser.dollar_convert("some_url")
+    assert result == 30
 
 
 @pytest.mark.asyncio
@@ -64,8 +66,8 @@ async def test_get_main_company_info(mock_get):
 )
 def test_top10_prices_method_of_Analyzer_class(Analyzer_instance):
     Analyzer_instance.top10_prices()
-    with open("Top_10_Most_expensive.json") as file:
-        sorted_companies = json.load(file)
+    with open("Top_10_Most_expensive.json") as json_file:
+        sorted_companies = json.load(json_file)
     assert sorted_companies == [
         {"Company price": "9 B"},
         {"Company price": "6 B"},

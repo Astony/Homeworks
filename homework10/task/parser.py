@@ -37,7 +37,7 @@ class Parser:
     def __init__(self) -> None:
         self.url = "https://markets.businessinsider.com/index/components/s&p_500?p="
         self.main_url = self.url.split("index")[0]
-        self.pages = [self.url + str(page) for page in range(1, 12)]
+        self.pages = [self.url + str(page) for page in range(1, 2)]
 
     async def get_links_and_year_growth(
         self, session: aiohttp.ClientSession, page: str
@@ -168,14 +168,14 @@ class StockAnalyzer:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
     @staticmethod
-    def open_and_read_companies_info_file(
-        companies_info_file: str = "companies_info.json",
-    ):
+    def open_and_read_companies_info_file(companies_info_file: str):
         with open(companies_info_file) as file:
             return json.load(file)
 
-    def __init__(self):
-        self.companies_info = StockAnalyzer.open_and_read_companies_info_file()
+    def __init__(self, companies_info_file="companies_info.json"):
+        self.companies_info = StockAnalyzer.open_and_read_companies_info_file(
+            companies_info_file
+        )
 
     def top10_prices(self) -> None:
         """Method that creates json file with top 10 companies the highest total price"""
