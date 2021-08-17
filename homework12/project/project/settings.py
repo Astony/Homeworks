@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "homework12.project.orm.apps.OrmConfig",
+    "project.orm.apps.OrmConfig",
 ]
 
 MIDDLEWARE = [
