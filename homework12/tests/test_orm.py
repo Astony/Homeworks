@@ -1,5 +1,5 @@
 import pytest
-from orm.models import Homework, HomeworkResult, Student, Teacher
+from homework12.orm.models import Homework, HomeworkResult, Student, Teacher
 
 
 @pytest.mark.django_db
