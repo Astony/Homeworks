@@ -16,3 +16,11 @@ def test_databases(create_tables):
     assert homework.creator.first_name == "John"
     assert student.first_name == "Joe"
     assert hw_result.creator.first_name == "Joe"
+
+
+@pytest.mark.django_db
+def test_negative__db(create_tables):
+    """Test that attempt to get an empty query throw an exception"""
+    with pytest.raises(Exception):
+        teacher = Teacher.objects.get(first_name="Incognito")
+        assert not teacher.first_name == "Incognito"
