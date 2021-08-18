@@ -57,8 +57,7 @@ class Parser:
         self.dollar_price = await Parser.dollar_convert(
             "https://www.banki.ru/products/currency/usd/"
         )
-        links = []
-        gains = []
+        links, gains = [], []
         tasks = await Parser.fetch_all(self.get_links_and_year_growth, self.pages)
         for task in tasks:
             links.extend(task.result()[0])
@@ -169,6 +168,7 @@ class StockAnalyzer:
 
     @staticmethod
     def open_and_read_companies_info_file(companies_info_file: str):
+        """Function that loads data from json file"""
         with open(companies_info_file) as file:
             return json.load(file)
 
@@ -187,7 +187,7 @@ class StockAnalyzer:
         StockAnalyzer.create_json_file("Top_10_Most_expensive", top10prices)
 
     def top10_PE(self) -> None:
-        """Method that creates json file with top 10 companies the fewest total price"""
+        """Method that creates json file with top 10  companies the fewest total price"""
         top10PE = (
             element for element in self.companies_info if element["P/E Ratio"] != 0
         )
