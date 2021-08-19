@@ -1,18 +1,22 @@
 from django.db import models
 
 
-class Student(models.Model):
+class Person(models.Model):
+    """Create table with person's name and surname in db"""
+
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.first_name + self.last_name
+
+
+class Student(Person):
     """Create table Student in db"""
 
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
 
-
-class Teacher(models.Model):
+class Teacher(Person):
     """Create table Teacher in db"""
-
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
 
 
 class Homework(models.Model):
@@ -22,6 +26,9 @@ class Homework(models.Model):
     creator = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.task
+
 
 class HomeworkResult(models.Model):
     """Create table HomeworkResult in db"""
@@ -30,3 +37,6 @@ class HomeworkResult(models.Model):
     solution = models.TextField()
     creator = models.ForeignKey(Student, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.solution
