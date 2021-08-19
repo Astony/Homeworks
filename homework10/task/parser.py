@@ -37,7 +37,7 @@ class Parser:
     def __init__(self) -> None:
         self.url = "https://markets.businessinsider.com/index/components/s&p_500?p="
         self.main_url = self.url.split("index")[0]
-        self.pages = [self.url + str(page) for page in range(1, 2)]
+        self.pages = [self.url + str(page) for page in range(1, 12)]
 
     async def get_links_and_year_growth(
         self, session: aiohttp.ClientSession, page: str
